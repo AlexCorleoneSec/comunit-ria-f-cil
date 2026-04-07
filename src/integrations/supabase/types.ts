@@ -14,7 +14,153 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      atendimentos: {
+        Row: {
+          batalhao: string | null
+          companhia: string | null
+          created_at: string
+          data_fato: string
+          data_registro: string
+          demanda: string | null
+          endereco_ocorrencia: string | null
+          grande_comando: string | null
+          id: string
+          observacoes: string | null
+          origem_atendimento: string
+          primeiro_mediador_id: string | null
+          resumo_fato: string | null
+          segundo_mediador_id: string | null
+          status: string | null
+          tipo_local: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          batalhao?: string | null
+          companhia?: string | null
+          created_at?: string
+          data_fato: string
+          data_registro?: string
+          demanda?: string | null
+          endereco_ocorrencia?: string | null
+          grande_comando?: string | null
+          id?: string
+          observacoes?: string | null
+          origem_atendimento: string
+          primeiro_mediador_id?: string | null
+          resumo_fato?: string | null
+          segundo_mediador_id?: string | null
+          status?: string | null
+          tipo_local?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          batalhao?: string | null
+          companhia?: string | null
+          created_at?: string
+          data_fato?: string
+          data_registro?: string
+          demanda?: string | null
+          endereco_ocorrencia?: string | null
+          grande_comando?: string | null
+          id?: string
+          observacoes?: string | null
+          origem_atendimento?: string
+          primeiro_mediador_id?: string | null
+          resumo_fato?: string | null
+          segundo_mediador_id?: string | null
+          status?: string | null
+          tipo_local?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "atendimentos_primeiro_mediador_id_fkey"
+            columns: ["primeiro_mediador_id"]
+            isOneToOne: false
+            referencedRelation: "mediadores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "atendimentos_segundo_mediador_id_fkey"
+            columns: ["segundo_mediador_id"]
+            isOneToOne: false
+            referencedRelation: "mediadores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      mediadores: {
+        Row: {
+          batalhao: string | null
+          celular: string | null
+          companhia: string | null
+          created_at: string
+          cursos_certificacoes: string | null
+          data_credenciamento: string | null
+          email: string | null
+          formacao: string | null
+          grande_comando: string | null
+          id: string
+          nome: string
+          opm: string | null
+          posto_graduacao: string | null
+          re: string | null
+          status_credenciamento:
+            | Database["public"]["Enums"]["status_credenciamento"]
+            | null
+          telefone: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          batalhao?: string | null
+          celular?: string | null
+          companhia?: string | null
+          created_at?: string
+          cursos_certificacoes?: string | null
+          data_credenciamento?: string | null
+          email?: string | null
+          formacao?: string | null
+          grande_comando?: string | null
+          id?: string
+          nome: string
+          opm?: string | null
+          posto_graduacao?: string | null
+          re?: string | null
+          status_credenciamento?:
+            | Database["public"]["Enums"]["status_credenciamento"]
+            | null
+          telefone?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          batalhao?: string | null
+          celular?: string | null
+          companhia?: string | null
+          created_at?: string
+          cursos_certificacoes?: string | null
+          data_credenciamento?: string | null
+          email?: string | null
+          formacao?: string | null
+          grande_comando?: string | null
+          id?: string
+          nome?: string
+          opm?: string | null
+          posto_graduacao?: string | null
+          re?: string | null
+          status_credenciamento?:
+            | Database["public"]["Enums"]["status_credenciamento"]
+            | null
+          telefone?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +169,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      status_credenciamento: "ativo" | "inativo"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +296,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      status_credenciamento: ["ativo", "inativo"],
+    },
   },
 } as const
