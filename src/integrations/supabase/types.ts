@@ -161,6 +161,75 @@ export type Database = {
         }
         Relationships: []
       }
+      pvs_cadastros: {
+        Row: {
+          ano_inicio: number | null
+          cia_pm: string | null
+          cidade: string | null
+          contato_tutor: string | null
+          created_at: string
+          documento_tutor: string | null
+          email_tutor: string | null
+          endereco: string | null
+          id: string
+          latitude: number | null
+          longitude: number | null
+          modalidade: string | null
+          nome_tutor: string
+          opm: string | null
+          ponto_final_lat: number | null
+          ponto_final_lng: number | null
+          ponto_inicial_lat: number | null
+          ponto_inicial_lng: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          ano_inicio?: number | null
+          cia_pm?: string | null
+          cidade?: string | null
+          contato_tutor?: string | null
+          created_at?: string
+          documento_tutor?: string | null
+          email_tutor?: string | null
+          endereco?: string | null
+          id?: string
+          latitude?: number | null
+          longitude?: number | null
+          modalidade?: string | null
+          nome_tutor: string
+          opm?: string | null
+          ponto_final_lat?: number | null
+          ponto_final_lng?: number | null
+          ponto_inicial_lat?: number | null
+          ponto_inicial_lng?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          ano_inicio?: number | null
+          cia_pm?: string | null
+          cidade?: string | null
+          contato_tutor?: string | null
+          created_at?: string
+          documento_tutor?: string | null
+          email_tutor?: string | null
+          endereco?: string | null
+          id?: string
+          latitude?: number | null
+          longitude?: number | null
+          modalidade?: string | null
+          nome_tutor?: string
+          opm?: string | null
+          ponto_final_lat?: number | null
+          ponto_final_lng?: number | null
+          ponto_inicial_lat?: number | null
+          ponto_inicial_lng?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
