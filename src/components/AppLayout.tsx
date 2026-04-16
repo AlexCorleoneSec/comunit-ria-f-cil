@@ -1,13 +1,13 @@
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
-import { ClipboardList, UserCircle, BarChart3, LogOut, Shield, Menu, X } from "lucide-react";
+import { ClipboardList, UserCircle, BarChart3, LogOut, Shield, Menu, X, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 
 const navItems = [
-  { to: "/", label: "Atendimentos", icon: ClipboardList },
-  { to: "/perfil", label: "Perfil do Mediador", icon: UserCircle },
-  { to: "/estatisticas", label: "Estatísticas", icon: BarChart3 },
+  { to: "/mediacao", label: "Atendimentos", icon: ClipboardList },
+  { to: "/mediacao/perfil", label: "Perfil do Mediador", icon: UserCircle },
+  { to: "/mediacao/estatisticas", label: "Estatísticas", icon: BarChart3 },
 ];
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
@@ -21,6 +21,9 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       <header className="bg-primary text-primary-foreground shadow-md">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
           <div className="flex items-center gap-3">
+            <Link to="/menu" className="hover:opacity-80">
+              <ArrowLeft className="w-5 h-5" />
+            </Link>
             <Shield className="w-7 h-7" />
             <div>
               <h1 className="text-lg font-heading font-bold leading-tight">Mediação Comunitária</h1>
