@@ -171,6 +171,8 @@ export type Database = {
           documento_tutor: string | null
           email_tutor: string | null
           endereco: string | null
+          endereco_ponto_a: string | null
+          endereco_ponto_b: string | null
           id: string
           latitude: number | null
           longitude: number | null
@@ -193,6 +195,8 @@ export type Database = {
           documento_tutor?: string | null
           email_tutor?: string | null
           endereco?: string | null
+          endereco_ponto_a?: string | null
+          endereco_ponto_b?: string | null
           id?: string
           latitude?: number | null
           longitude?: number | null
@@ -215,6 +219,8 @@ export type Database = {
           documento_tutor?: string | null
           email_tutor?: string | null
           endereco?: string | null
+          endereco_ponto_a?: string | null
+          endereco_ponto_b?: string | null
           id?: string
           latitude?: number | null
           longitude?: number | null
