@@ -73,6 +73,32 @@ export default function PvsMap({ onChange, enderecoA, enderecoB }: Props) {
   const [clickMode, setClickMode] = useState<"start" | "end">("start");
   const [flyTarget, setFlyTarget] = useState<{ lat: number; lng: number }>({ lat: 0, lng: 0 });
   const [loadingGeo, setLoadingGeo] = useState(false);
+  const [route, setRoute] = useState<[number, number][]>([]);
+  const [distance, setDistance] = useState<number | null>(null);
+  const [loadingRoute, setLoadingRoute] = useState(false);
+
+  const fetchRoute = async (a: [number, number], b: [number, number]) => {
+    setLoadingRoute(true);
+    try {
+      const url = `https://router.project-osrm.org/route/v1/driving/${a[1]},${a[0]};${b[1]},${b[0]}?overview=full&geometries=geojson`;
+      const res = await fetch(url);
+      const data = await res.json();
+      if (data.routes && data.routes[0]) {
+        const coords: [number, number][] = data.routes[0].geometry.coordinates.map(
+          (c: [number, number]) => [c[1], c[0]]
+        );
+        setRoute(coords);
+        setDistance(data.routes[0].distance);
+      } else {
+        setRoute([a, b]);
+        setDistance(null);
+      }
+    } catch {
+      setRoute([a, b]);
+      setDistance(null);
+    }
+    setLoadingRoute(false);
+  };
 
   useEffect(() => {
     if (start) {
@@ -86,6 +112,15 @@ export default function PvsMap({ onChange, enderecoA, enderecoB }: Props) {
       onChange({ center: start || center, start, end });
     }
   }, [end]);
+
+  useEffect(() => {
+    if (start && end) {
+      fetchRoute(start, end);
+    } else {
+      setRoute([]);
+      setDistance(null);
+    }
+  }, [start, end]);
 
   const handleGeocodeAddresses = async () => {
     if (!enderecoA && !enderecoB) return;
@@ -116,6 +151,13 @@ export default function PvsMap({ onChange, enderecoA, enderecoB }: Props) {
           {loadingGeo ? "Buscando endereços..." : "Plotar Ponto A e Ponto B no mapa"}
         </Button>
       </div>
+      {(loadingRoute || distance !== null) && (
+        <div className="mb-3 text-center text-sm font-medium text-primary">
+          {loadingRoute
+            ? "Calculando trajeto..."
+            : `Distância do trajeto: ${(distance! / 1000).toFixed(2)} km (${Math.round(distance!)} m) ✓`}
+        </div>
+      )}
       <div className="flex gap-2 mb-3">
         <Button
           size="sm"
@@ -144,7 +186,9 @@ export default function PvsMap({ onChange, enderecoA, enderecoB }: Props) {
           {flyTarget.lat !== 0 && <FlyTo lat={flyTarget.lat} lng={flyTarget.lng} />}
           {start && <Marker position={start} icon={greenIcon} />}
           {end && <Marker position={end} icon={redIcon} />}
-          {start && end && <Polyline positions={[start, end]} color="hsl(215, 60%, 22%)" weight={3} />}
+          {route.length > 1 && (
+            <Polyline positions={route} color="hsl(215, 80%, 45%)" weight={5} opacity={0.8} />
+          )}
         </MapContainer>
       </div>
     </div>
