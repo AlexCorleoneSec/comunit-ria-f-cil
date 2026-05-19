@@ -85,6 +85,8 @@ export default function PvsIndex() {
                 ["Cidade", viewData.cidade],
                 ["Ano de Início", viewData.ano_inicio],
                 ["Endereço", viewData.endereco],
+                ["Ponto A (início)", viewData.endereco_ponto_a],
+                ["Ponto B (final)", viewData.endereco_ponto_b],
               ].map(([label, val]) => (
                 <div key={label as string} className="flex justify-between border-b border-border pb-2">
                   <span className="text-muted-foreground">{label}</span>
