@@ -34,7 +34,8 @@ const redIcon = new L.Icon({
 
 interface Props {
   onChange: (data: { center: [number, number]; start: [number, number] | null; end: [number, number] | null }) => void;
-  endereco?: string;
+  enderecoA?: string;
+  enderecoB?: string;
 }
 
 function ClickHandler({ onStart, onEnd, clickMode }: { onStart: (pos: [number, number]) => void; onEnd: (pos: [number, number]) => void; clickMode: "start" | "end" }) {
@@ -48,24 +49,6 @@ function ClickHandler({ onStart, onEnd, clickMode }: { onStart: (pos: [number, n
   return null;
 }
 
-function SearchControl({ onSearch }: { onSearch: (query: string) => void }) {
-  const [query, setQuery] = useState("");
-  return (
-    <div className="flex gap-2 mb-3">
-      <Input
-        value={query}
-        onChange={e => setQuery(e.target.value)}
-        placeholder="Buscar endereço..."
-        className="h-9 text-sm"
-        onKeyDown={e => e.key === "Enter" && onSearch(query)}
-      />
-      <Button size="sm" variant="outline" onClick={() => onSearch(query)}>
-        <Search className="w-4 h-4" />
-      </Button>
-    </div>
-  );
-}
-
 function FlyTo({ lat, lng }: { lat: number; lng: number }) {
   const map = useMap();
   useEffect(() => {
@@ -74,12 +57,22 @@ function FlyTo({ lat, lng }: { lat: number; lng: number }) {
   return null;
 }
 
-export default function PvsMap({ onChange, endereco }: Props) {
+async function geocode(query: string): Promise<[number, number] | null> {
+  try {
+    const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1`);
+    const data = await res.json();
+    if (data.length > 0) return [parseFloat(data[0].lat), parseFloat(data[0].lon)];
+  } catch {}
+  return null;
+}
+
+export default function PvsMap({ onChange, enderecoA, enderecoB }: Props) {
   const [start, setStart] = useState<[number, number] | null>(null);
   const [end, setEnd] = useState<[number, number] | null>(null);
   const [center, setCenter] = useState<[number, number]>([-23.5505, -46.6333]); // SP
   const [clickMode, setClickMode] = useState<"start" | "end">("start");
   const [flyTarget, setFlyTarget] = useState<{ lat: number; lng: number }>({ lat: 0, lng: 0 });
+  const [loadingGeo, setLoadingGeo] = useState(false);
 
   useEffect(() => {
     if (start) {
@@ -94,21 +87,35 @@ export default function PvsMap({ onChange, endereco }: Props) {
     }
   }, [end]);
 
-  const handleSearch = async (query: string) => {
-    if (!query) return;
-    try {
-      const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1`);
-      const data = await res.json();
-      if (data.length > 0) {
-        const { lat, lon } = data[0];
-        setFlyTarget({ lat: parseFloat(lat), lng: parseFloat(lon) });
-      }
-    } catch {}
+  const handleGeocodeAddresses = async () => {
+    if (!enderecoA && !enderecoB) return;
+    setLoadingGeo(true);
+    const [a, b] = await Promise.all([
+      enderecoA ? geocode(enderecoA) : Promise.resolve(null),
+      enderecoB ? geocode(enderecoB) : Promise.resolve(null),
+    ]);
+    if (a) {
+      setStart(a);
+      setFlyTarget({ lat: a[0], lng: a[1] });
+    }
+    if (b) setEnd(b);
+    setLoadingGeo(false);
   };
 
   return (
     <div>
-      <SearchControl onSearch={handleSearch} />
+      <div className="mb-3">
+        <Button
+          size="sm"
+          variant="outline"
+          onClick={handleGeocodeAddresses}
+          disabled={loadingGeo || (!enderecoA && !enderecoB)}
+          className="w-full gap-2"
+        >
+          <Search className="w-4 h-4" />
+          {loadingGeo ? "Buscando endereços..." : "Plotar Ponto A e Ponto B no mapa"}
+        </Button>
+      </div>
       <div className="flex gap-2 mb-3">
         <Button
           size="sm"
@@ -116,7 +123,7 @@ export default function PvsMap({ onChange, endereco }: Props) {
           onClick={() => setClickMode("start")}
           className="text-xs"
         >
-          Ponto Inicial
+          Ponto A (início)
         </Button>
         <Button
           size="sm"
@@ -124,7 +131,7 @@ export default function PvsMap({ onChange, endereco }: Props) {
           onClick={() => setClickMode("end")}
           className="text-xs"
         >
-          Ponto Final
+          Ponto B (final)
         </Button>
       </div>
       <div className="rounded-lg overflow-hidden border" style={{ height: 400 }}>

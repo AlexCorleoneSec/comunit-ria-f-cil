@@ -29,6 +29,8 @@ export default function PvsCadastro() {
     contato_tutor: "",
     email_tutor: "",
     endereco: "",
+    endereco_ponto_a: "",
+    endereco_ponto_b: "",
     latitude: 0,
     longitude: 0,
     ponto_inicial_lat: 0,
@@ -137,13 +139,35 @@ export default function PvsCadastro() {
             </div>
 
             <div className="border-t pt-4 mt-4">
-              <div className="space-y-2">
-                <Label>Endereço</Label>
-                <Input
-                  value={form.endereco}
-                  onChange={e => update("endereco", e.target.value)}
-                  placeholder="Digite o endereço para buscar no mapa"
-                />
+              <h4 className="font-semibold text-sm mb-3">Trajeto do PVS</h4>
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label>Endereço (geral)</Label>
+                  <Input
+                    value={form.endereco}
+                    onChange={e => update("endereco", e.target.value)}
+                    placeholder="Endereço de referência do PVS"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Ponto A — Início do trajeto</Label>
+                  <Input
+                    value={form.endereco_ponto_a}
+                    onChange={e => update("endereco_ponto_a", e.target.value)}
+                    placeholder="Ex: Rua das Flores, 100 - Bairro, Cidade"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Ponto B — Final do trajeto</Label>
+                  <Input
+                    value={form.endereco_ponto_b}
+                    onChange={e => update("endereco_ponto_b", e.target.value)}
+                    placeholder="Ex: Rua das Flores, 500 - Bairro, Cidade"
+                  />
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Após preencher Ponto A e Ponto B, clique em "Plotar" no mapa ao lado para visualizar o trajeto.
+                </p>
               </div>
             </div>
 
@@ -162,9 +186,13 @@ export default function PvsCadastro() {
           </CardHeader>
           <CardContent>
             <p className="text-xs text-muted-foreground mb-3">
-              Clique no mapa para definir o ponto inicial (verde) e ponto final (vermelho) do logradouro.
+              Preencha os endereços de Ponto A e Ponto B e clique em "Plotar", ou clique manualmente no mapa para definir o ponto inicial (verde) e o ponto final (vermelho).
             </p>
-            <PvsMap onChange={handleMapChange} endereco={form.endereco} />
+            <PvsMap
+              onChange={handleMapChange}
+              enderecoA={form.endereco_ponto_a}
+              enderecoB={form.endereco_ponto_b}
+            />
           </CardContent>
         </Card>
       </div>
