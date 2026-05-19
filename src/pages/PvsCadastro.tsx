@@ -142,14 +142,6 @@ export default function PvsCadastro() {
               <h4 className="font-semibold text-sm mb-3">Trajeto do PVS</h4>
               <div className="space-y-4">
                 <div className="space-y-2">
-                  <Label>Endereço (geral)</Label>
-                  <Input
-                    value={form.endereco}
-                    onChange={e => update("endereco", e.target.value)}
-                    placeholder="Endereço de referência do PVS"
-                  />
-                </div>
-                <div className="space-y-2">
                   <Label>Ponto A — Início do trajeto</Label>
                   <Input
                     value={form.endereco_ponto_a}
