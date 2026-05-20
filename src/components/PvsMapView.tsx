@@ -61,19 +61,18 @@ export default function PvsMapView({ start, end, height = 300 }: Props) {
     })();
   }, [start?.[0], start?.[1], end?.[0], end?.[1]]);
 
-  if (!start && !end) {
-    return (
-      <div className="text-xs text-muted-foreground text-center py-4 border rounded-lg">
-        Sem coordenadas cadastradas para exibir no mapa.
-      </div>
-    );
-  }
-
-  const center: [number, number] = start || end!;
+  const defaultCenter: [number, number] = [-23.5505, -46.6333]; // São Paulo
+  const center: [number, number] = start || end || defaultCenter;
+  const zoom = start || end ? 14 : 11;
   const bounds = start && end ? L.latLngBounds([start, end]).pad(0.3) : undefined;
 
   return (
     <div>
+      {!start && !end && (
+        <div className="mb-2 text-center text-xs text-muted-foreground">
+          Sem coordenadas cadastradas para este PVS.
+        </div>
+      )}
       {distance !== null && (
         <div className="mb-2 text-center text-xs font-medium text-primary">
           Distância do trajeto: {(distance / 1000).toFixed(2)} km
@@ -82,7 +81,7 @@ export default function PvsMapView({ start, end, height = 300 }: Props) {
       <div className="rounded-lg overflow-hidden border" style={{ height }}>
         <MapContainer
           center={center}
-          zoom={14}
+          zoom={zoom}
           bounds={bounds}
           style={{ height: "100%", width: "100%" }}
         >
