@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Plus, List, BarChart3, Eye } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import PvsMapView from "@/components/PvsMapView";
 
 export default function PvsIndex() {
   const navigate = useNavigate();
@@ -68,12 +69,28 @@ export default function PvsIndex() {
       )}
 
       <Dialog open={!!viewData} onOpenChange={v => !v && setViewData(null)}>
-        <DialogContent className="max-w-lg">
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Detalhes do PVS</DialogTitle>
           </DialogHeader>
           {viewData && (
-            <div className="space-y-3 text-sm">
+            <div className="space-y-4 text-sm">
+              <div>
+                <h4 className="font-semibold mb-2">Trajeto no mapa</h4>
+                <PvsMapView
+                  start={
+                    viewData.ponto_inicial_lat && viewData.ponto_inicial_lng
+                      ? [viewData.ponto_inicial_lat, viewData.ponto_inicial_lng]
+                      : null
+                  }
+                  end={
+                    viewData.ponto_final_lat && viewData.ponto_final_lng
+                      ? [viewData.ponto_final_lat, viewData.ponto_final_lng]
+                      : null
+                  }
+                />
+              </div>
+              <div className="space-y-3">
               {[
                 ["Tutor", viewData.nome_tutor],
                 ["Documento", viewData.documento_tutor],
@@ -93,6 +110,7 @@ export default function PvsIndex() {
                   <span className="font-medium text-right max-w-[60%]">{(val as string) || "—"}</span>
                 </div>
               ))}
+              </div>
             </div>
           )}
         </DialogContent>
