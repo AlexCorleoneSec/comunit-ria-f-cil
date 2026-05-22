@@ -36,6 +36,8 @@ interface Props {
   onChange: (data: { center: [number, number]; start: [number, number] | null; end: [number, number] | null }) => void;
   enderecoA?: string;
   enderecoB?: string;
+  initialStart?: [number, number] | null;
+  initialEnd?: [number, number] | null;
 }
 
 function ClickHandler({ onStart, onEnd, clickMode }: { onStart: (pos: [number, number]) => void; onEnd: (pos: [number, number]) => void; clickMode: "start" | "end" }) {
@@ -66,10 +68,10 @@ async function geocode(query: string): Promise<[number, number] | null> {
   return null;
 }
 
-export default function PvsMap({ onChange, enderecoA, enderecoB }: Props) {
-  const [start, setStart] = useState<[number, number] | null>(null);
-  const [end, setEnd] = useState<[number, number] | null>(null);
-  const [center, setCenter] = useState<[number, number]>([-23.5505, -46.6333]); // SP
+export default function PvsMap({ onChange, enderecoA, enderecoB, initialStart, initialEnd }: Props) {
+  const [start, setStart] = useState<[number, number] | null>(initialStart || null);
+  const [end, setEnd] = useState<[number, number] | null>(initialEnd || null);
+  const [center, setCenter] = useState<[number, number]>(initialStart || initialEnd || [-23.5505, -46.6333]);
   const [clickMode, setClickMode] = useState<"start" | "end">("start");
   const [flyTarget, setFlyTarget] = useState<{ lat: number; lng: number }>({ lat: 0, lng: 0 });
   const [loadingGeo, setLoadingGeo] = useState(false);
