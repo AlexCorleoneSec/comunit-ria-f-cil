@@ -193,9 +193,27 @@ export default function PvsIndex() {
             <div className="space-y-4 text-sm">
               <div>
                 <h4 className="font-semibold mb-2">Trajeto no mapa</h4>
-                <p className="text-xs text-muted-foreground mb-2">
-                  Edite os endereços abaixo e clique em "Plotar" no mapa, ou clique no mapa para reposicionar os pontos.
-                </p>
+                <div className="grid grid-cols-1 gap-3 mb-3">
+                  <div className="space-y-1">
+                    <Label>Ponto A — Início do trajeto</Label>
+                    <Input
+                      value={editForm.endereco_ponto_a || ""}
+                      onChange={e => updateField("endereco_ponto_a", e.target.value)}
+                      placeholder="Ex: Rua das Flores, 100 - Bairro, Cidade"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <Label>Ponto B — Final do trajeto</Label>
+                    <Input
+                      value={editForm.endereco_ponto_b || ""}
+                      onChange={e => updateField("endereco_ponto_b", e.target.value)}
+                      placeholder="Ex: Rua das Flores, 500 - Bairro, Cidade"
+                    />
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    Edite os endereços e clique em "Plotar" no mapa, ou clique no mapa para reposicionar os pontos.
+                  </p>
+                </div>
                 <PvsMap
                   onChange={handleMapChange}
                   enderecoA={editForm.endereco_ponto_a}
@@ -258,14 +276,6 @@ export default function PvsIndex() {
                     value={editForm.ano_inicio || ""}
                     onChange={e => updateField("ano_inicio", e.target.value ? parseInt(e.target.value) : null)}
                   />
-                </div>
-                <div className="space-y-1 sm:col-span-2">
-                  <Label>Ponto A — Início do trajeto</Label>
-                  <Input value={editForm.endereco_ponto_a || ""} onChange={e => updateField("endereco_ponto_a", e.target.value)} />
-                </div>
-                <div className="space-y-1 sm:col-span-2">
-                  <Label>Ponto B — Final do trajeto</Label>
-                  <Input value={editForm.endereco_ponto_b || ""} onChange={e => updateField("endereco_ponto_b", e.target.value)} />
                 </div>
               </div>
 
