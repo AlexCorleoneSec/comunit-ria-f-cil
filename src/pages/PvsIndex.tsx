@@ -78,13 +78,23 @@ export default function PvsIndex() {
     }
     setSaving(true);
     const { id, user_id, created_at, updated_at, ...payload } = editForm;
-    const { error } = await supabase.from("pvs_cadastros").update(payload).eq("id", id);
+    const { data, error } = await supabase
+      .from("pvs_cadastros")
+      .update(payload)
+      .eq("id", id)
+      .select();
     if (error) {
       toast({ title: "Erro ao salvar", description: error.message, variant: "destructive" });
+    } else if (!data || data.length === 0) {
+      toast({
+        title: "Sem permissão para editar",
+        description: "Este PVS foi cadastrado por outro usuário. Apenas quem cadastrou pode editá-lo.",
+        variant: "destructive",
+      });
     } else {
       toast({ title: "PVS atualizado com sucesso!" });
       await loadCadastros();
-      setViewData({ ...editForm });
+      setViewData(data[0]);
       setEditMode(false);
       setEditForm(null);
     }
