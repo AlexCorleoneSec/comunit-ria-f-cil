@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -18,12 +19,14 @@ const MODALIDADES = ["Residencial", "Comercial", "Rural", "Escolar", "Mista"];
 export default function PvsIndex() {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { user } = useAuth();
   const [cadastros, setCadastros] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [viewData, setViewData] = useState<any>(null);
   const [editMode, setEditMode] = useState(false);
   const [editForm, setEditForm] = useState<any>(null);
   const [saving, setSaving] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   const loadCadastros = async () => {
     const { data } = await supabase.from("pvs_cadastros").select("*").order("created_at", { ascending: false });
@@ -34,6 +37,19 @@ export default function PvsIndex() {
   useEffect(() => {
     loadCadastros();
   }, []);
+
+  useEffect(() => {
+    if (!user) { setIsAdmin(false); return; }
+    supabase
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", user.id)
+      .eq("role", "admin")
+      .maybeSingle()
+      .then(({ data }) => setIsAdmin(!!data));
+  }, [user]);
+
+  const canEdit = (c: any) => !!user && (c.user_id === user.id || isAdmin);
 
   const openView = (c: any) => {
     setViewData(c);
@@ -152,7 +168,7 @@ export default function PvsIndex() {
           <DialogHeader>
             <DialogTitle className="flex items-center justify-between gap-2">
               <span>{editMode ? "Editar PVS" : "Detalhes do PVS"}</span>
-              {viewData && !editMode && (
+              {viewData && !editMode && canEdit(viewData) && (
                 <Button size="sm" variant="outline" onClick={startEdit} className="gap-2 mr-8">
                   <Pencil className="w-4 h-4" /> Editar
                 </Button>
